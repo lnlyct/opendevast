@@ -1,0 +1,13 @@
+{
+  "name": "opendevast",
+  "version": "SEE devast/__init__.py",
+  "description": "Open implementation of Devastation.",
+  "repository": "https://github.com/opendevast/opendevast",
+  "authors": "LapaMauve & LonelyCat",
+  "license": "SEE LICENCE IN LICENSE",
+  "scripts": {
+    "install": "pip3 install typing pytest",
+    "test": "clear; python3 -m tests",
+    "run": "clear; python3 -m devast"
+  }
+}

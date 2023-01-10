@@ -11,3 +11,5 @@ Serverside:
 
 Clientside:
 - Typescript consideration
+
+Join the Discord server to get involved: https://discord.gg/p8DsqGkjQ3

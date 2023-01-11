@@ -6,7 +6,7 @@ I am open sourcing this on the clearnet in hopes the copywrite holders
 will appreciate the effort and not take the project down :)
 
 Serverside:
-- PEP 619
+- PEP 8
 - Python 3.10
 - Google docstring format
 

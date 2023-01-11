@@ -8,6 +8,7 @@ will appreciate the effort and not take the project down :)
 Serverside:
 - PEP 619
 - Python 3.10
+- Google docstring format
 
 Clientside:
 - Typescript consideration

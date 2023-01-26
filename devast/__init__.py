@@ -8,6 +8,7 @@ __version__ = "0.0.0"
 
 from .common import database, logger, parser
 from multiprocessing import Queue
+import logging
 
 
 def run():
@@ -17,7 +18,9 @@ def run():
     TODO: Run as daemon with interactive shell.
     """
     log_queue = Queue()
-    log = logger.Logger(group=None, log_queue=log_queue)
-    log.start()
-    log.join()
+    log_listener = logger.Listener(group=None, queue=log_queue)
+    log_listener.start()
+    # Put all runtime logic in between the logger thread
+
+    log_listener.join()
 

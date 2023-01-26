@@ -1,29 +1,19 @@
 import logging, logging.config
-from dataclasses import dataclass
+from threading import Thread
 
 # __all__ = (
 #     "Logger"
 # )
 
 
-@dataclass
-class Colors:
-    pass
-
-
-@dataclass
-class Styles:
-    pass
-
-
-class Logger:
+class Logger(Thread):
     """
-    Logs all events to the console 
-    and separate instance log files.
+    Listens to a shared queue as a thread 
+    running from the main python process, and then
+    logs all events to the console and log files.
     """
 
-    def __init__(self, name: str) -> None:
-        self.logger = logging.getLogger(name)
+    def __init__(self, log_queue) -> None:
         # self.handler = logging.getStreamHandler(
             
         # )
@@ -31,3 +21,5 @@ class Logger:
             fmt="%(asctime)s %(name)s %(levelname)s %(message)s",
             datefmt="[%Y-%m-%d %H:%M:%S]"
         )
+
+        Thread.__init__(self, log_queue)

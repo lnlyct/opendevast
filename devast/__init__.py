@@ -11,7 +11,6 @@ from multiprocessing import Queue, Process
 import logging
 
 import random
-import time
 
 i = 0
 
@@ -28,7 +27,6 @@ def worker_process(q):
         lvl = random.choice(levels)
         logger = logging.getLogger(random.choice(loggers))
         logger.log(lvl, 'Message no. %d', i)
-        time.sleep(1)
 
 def run():
     """
@@ -50,6 +48,8 @@ def run():
     # Put all runtime logic in between the logger thread
 
     wp.join()
+
+    log_queue.put(None)
 
     log_listener.join()
 

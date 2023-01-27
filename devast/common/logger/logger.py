@@ -1,4 +1,4 @@
-import logging, logging.config, logging.handlers
+import logging, logging.config
 from threading import Thread
 from multiprocessing import current_process
 
@@ -6,31 +6,28 @@ from multiprocessing import current_process
 #     "Logger"
 # )
 
-# class Logger:
-#     """
-#     Instantiates a logger process,
-#     sends all logs to a shared queue.
-#     """
-#     def __init__(self, process, queue) -> None:
-#         """
-#         TODO: Add docs here!
-#         """
-#         self.queue = queue
-#         self.logger = logging.getLogger(process)
-#         self.handler = logging.handlers.QueueHandler(queue)
-#         # self.formatter = logging.Formatter(
-#         #     fmt="%(asctime)s %(name)s %(levelname)s %(message)s",
-#         #     datefmt="[%Y-%m-%d %H:%M:%S]"
-#         # )
+class Logger:
+    """
+    Instantiates a logger process,
+    sends all logs to a shared queue.
+    """
+    def __init__(self, queue) -> None:
+        """
+        TODO: Add docs here!
+        """
+        self.logger = logging.getLogger(current_process().name)
+        self.handler = logging.StreamHandler()
+        self.formatter = logging.Formatter(
+            fmt="%(asctime)s %(name)s %(levelname)s %(message)s",
+            datefmt="[%Y-%m-%d %H:%M:%S]"
+        )
 
-#         self.logger.setLevel(logging.DEBUG)
-#         self.logger.addHandler(self.handler)
-
-    # @staticmethod
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(self.handler)
     
 
-    # def info(self, message):
-    #     self.logger.log(logging.INFO, message)
+    def info(self, message):
+        self.logger.log(logging.INFO, message)
 
 class Listener(Thread):
     """
@@ -49,7 +46,7 @@ class Listener(Thread):
             None
         """
         self.queue = queue
-        Thread.__init__(self, group, queue) # queue may not be needed here, find out by testing!
+        Thread.__init__(self, group)
 
     def run(self) -> None:
         """
@@ -57,15 +54,17 @@ class Listener(Thread):
         """
         while True:
             record = self.queue.get()
+            print(record)
             if record is None:
                 break # Exits if a NoneType is sent to the queue
-            logger = logging.getLogger(record.name)
-            logger.handle(record)
+            log = logging.getLogger(record.name)
+            print(log.hasHandlers())
 
-    @staticmethod
-    def configure(queue):
-        print(current_process().name)
-        handler = logging.handlers.QueueHandler(queue)
-        root = logging.getLogger()
-        root.setLevel(logging.DEBUG)
-        root.addHandler(handler)
+    # @staticmethod
+    # def configure(queue):
+    #     handler = logging.handlers.QueueHandler(queue)
+    #     print(current_process().name)
+    #     process = current_process().name
+    #     process = logging.getLogger()
+    #     process.setLevel(logging.INFO)
+    #     process.addHandler(handler)

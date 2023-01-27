@@ -12,11 +12,11 @@ import logging
 
 import time
 def worker_process(log_queue):
-    logger.Listener.configure(log_queue)
+    # logger.Listener.configure(log_queue)    
+    logg = logger.Logger(log_queue)
 
     while True:
-        # root = logging.getLogger("test")
-        logging.info(f"hewo {1}")
+        logg.info("hewo")
         time.sleep(1)
 
 def run():
@@ -26,7 +26,7 @@ def run():
     TODO: Run as daemon with interactive shell.
     """
     log_queue = Queue(-1)
-    logger.Listener.configure(log_queue) # Main process logging
+    # logger.Listener.configure(log_queue) # Main process logging, for some reason is eternal loop
     wp = Process(target=worker_process, args=(log_queue,))
     wp.start()
 

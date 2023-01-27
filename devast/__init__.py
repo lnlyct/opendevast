@@ -7,26 +7,17 @@ __license__ = "See LICENSE for more details."
 __version__ = "0.0.0"
 
 from .common import database, logger, parser
-from multiprocessing import Queue, Process
+from multiprocessing import Queue, Process, current_process
 import logging
 
-import random
+import time
+def worker_process(log_queue):
+    logger.Listener.configure(log_queue)
 
-i = 0
-
-def worker_process(q):
-    qh = logging.handlers.QueueHandler(q)
-    root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-    root.addHandler(qh)
-    levels = [logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR,
-              logging.CRITICAL]
-    loggers = ['foo', 'foo.bar', 'foo.bar.baz',
-               'spam', 'spam.ham', 'spam.ham.eggs']
-    for i in range(100):
-        lvl = random.choice(levels)
-        logger = logging.getLogger(random.choice(loggers))
-        logger.log(lvl, 'Message no. %d', i)
+    while True:
+        # root = logging.getLogger("test")
+        logging.info(f"hewo {1}")
+        time.sleep(1)
 
 def run():
     """
@@ -34,22 +25,13 @@ def run():
     spawns any needed threads and processes.
     TODO: Run as daemon with interactive shell.
     """
-    log_queue = Queue()
-
-    # qh = logging.handlers.QueueHandler(log_queue)
-    # root = logging.getLogger()
-    # # root.setLevel(logging.DEBUG)
-    # root.addHandler(qh)
+    log_queue = Queue(-1)
+    logger.Listener.configure(log_queue) # Main process logging
+    wp = Process(target=worker_process, args=(log_queue,))
+    wp.start()
 
     log_listener = logger.Listener(group=None, queue=log_queue)
-    wp = Process(target=worker_process, name='worker %d' % (i + 1), args=(log_queue,))
-    wp.start()
     log_listener.start()
-    # Put all runtime logic in between the logger thread
-
     wp.join()
-
     log_queue.put(None)
-
     log_listener.join()
-
